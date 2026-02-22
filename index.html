@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LTCLeaks | Panel Licencyjny</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #e4e4e7;
+            padding: 16px;
+        }
+
+        .container {
+            background: rgba(20, 20, 22, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 40px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo h1 {
+            font-size: 3.2em;
+            font-weight: 700;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #888;
+            font-size: 0.7em;
+            padding: 4px 12px;
+            border-radius: 30px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 20px;
+        }
+
+        .nav-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .nav-tab.active {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* Panel logowania */
+        .login-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .login-header h2 {
+            font-size: 1.5em;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .input-label i {
+            font-style: normal;
+            color: #ef4444;
+            font-size: 0.75em;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 2px 8px;
+            border-radius: 30px;
+        }
+
+        .key-input-wrapper {
+            background: rgba(10, 10, 12, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .key-input-wrapper:focus-within {
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .key-prefix {
+            padding: 0 16px;
+            color: #4ade80;
+            font-family: 'SF Mono', monospace;
+            font-size: 1.2em;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        #keyInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 18px 18px 18px 0;
+            color: #fff;
+            font-size: 1.3em;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            letter-spacing: 3px;
+            font-weight: 500;
+        }
+
+        #keyInput::placeholder {
+            color: #333;
+            font-size: 0.9em;
+            letter-spacing: normal;
+            font-weight: normal;
+        }
+
+        #keyInput:focus {
+            outline: none;
+        }
+
+        #keyInput[type="password"] {
+            letter-spacing: 3px;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #fff;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 24px 0 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #3d3d3d 0%, #2a2a2a 100%);
+            border-color: rgba(74, 222, 128, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(74, 222, 128, 0.3);
+        }
+
+        .login-footer {
+            text-align: center;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .login-footer a {
+            color: #4ade80;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Panel wyszukiwarki */
+        .user-header {
+            background: rgba(74, 222, 128, 0.05);
+            border: 1px solid rgba(74, 222, 128, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #2d2d2d;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .user-key {
+            font-family: 'SF Mono', monospace;
+            color: #4ade80;
+            font-size: 1.1em;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #888;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        #nickInput {
+            flex: 1;
+            background: rgba(10, 10, 12, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        #nickInput:focus {
+            outline: none;
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        #searchBtn {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            padding: 0 24px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        #searchBtn:hover {
+            background: rgba(74, 222, 128, 0.15);
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .result-section {
+            background: rgba(10, 10, 12, 0.6);
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'SF Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            margin-bottom: 20px;
+        }
+
+        .offers-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .offers-header {
+            text-align: center;
+            margin-bottom: 16px;
+            color: #888;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .offer-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .offer-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(74, 222, 128, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .offer-card.danger:hover {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .offer-title {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .offer-price {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #4ade80;
+            margin-bottom: 4px;
+        }
+
+        .offer-price.danger {
+            color: #f87171;
+        }
+
+        .offer-desc {
+            font-size: 0.7em;
+            color: #666;
+        }
+
+        .offer-note {
+            margin-top: 16px;
+            text-align: center;
+            color: #666;
+            font-size: 0.75em;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 16px;
+        }
+
+        .offer-note a {
+            color: #4ade80;
+            text-decoration: none;
+        }
+
+        /* Panel admina */
+        .admin-section {
+            background: rgba(10, 10, 12, 0.6);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .admin-stats {
+            display: flex;
+            gap: 20px;
+            color: #888;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        .admin-input:focus {
+            outline: none;
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .admin-btn {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            padding: 14px;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .records-list {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .record-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .record-item strong {
+            color: #4ade80;
+        }
+
+        .success-message { color: #4ade80; }
+        .error-message { color: #f87171; }
+        .info-message { color: #60a5fa; }
+        .warning-message { color: #fbbf24; }
+
+        .result-section::-webkit-scrollbar,
+        .records-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .result-section::-webkit-scrollbar-track,
+        .records-list::-webkit-scrollbar-track {
+            background: rgba(30, 30, 30, 0.3);
+            border-radius: 10px;
+        }
+
+        .result-section::-webkit-scrollbar-thumb,
+        .records-list::-webkit-scrollbar-thumb {
+            background: rgba(80, 80, 80, 0.5);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1># LTCLeaks</h1>
+            <div class="badge" id="mainBadge">PANEL GŁÓWNY</div>
+        </div>
+
+        <!-- Zakładki nawigacji -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('user')">🔑 PANEL UŻYTKOWNIKA</div>
+            <div class="nav-tab" onclick="switchTab('admin')">⚙️ PANEL ADMINA</div>
+        </div>
+
+        <!-- Panel użytkownika (logowanie + wyszukiwarka) -->
+        <div id="userPanel" class="panel active">
+            <!-- Panel logowania -->
+            <div id="loginPanel">
+                <div class="login-header">
+                    <h2>Zaloguj się</h2>
+                    <p>Wprowadź klucz licencji aby uzyskać dostęp</p>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">
+                        <span>🔒 KLUCZ DOSTĘPU</span>
+                        <i>WYMAGANY</i>
+                    </div>
+                    <div class="key-input-wrapper">
+                        <span class="key-prefix">#</span>
+                        <input type="password" id="keyInput" placeholder="••••••••" autocomplete="off">
+                    </div>
+                </div>
+
+                <button class="login-btn" id="loginBtn">ZAŁOGUJ SIĘ</button>
+
+                <div class="login-footer">
+                    Nie posiadasz klucza? <a href="#" onclick="showBuyInfo()">Kup licencję</a>
+                </div>
+            </div>
+
+            <!-- Panel wyszukiwarki (po zalogowaniu) -->
+            <div id="searchPanel" style="display: none;">
+                <div class="user-header">
+                    <div class="user-info">
+                        <div class="user-avatar">👤</div>
+                        <span class="user-key" id="displayKey">••••••••</span>
+                    </div>
+                    <div class="logout-btn" onclick="logout()">WYLOGUJ</div>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="nickInput" placeholder="Wpisz nick gracza...">
+                    <button id="searchBtn" onclick="searchIP()">SZUKAJ</button>
+                </div>
+
+                <div class="result-section" id="result">
+                    ⚡ Wprowadź nick gracza aby rozpocząć wyszukiwanie
+                </div>
+
+                <!-- Sekcja z ofertami -->
+                <div class="offers-section">
+                    <div class="offers-header">📦 DOSTĘPNE OFERTY</div>
+                    <div class="offers-grid">
+                        <div class="offer-card danger" onclick="buyOffer('database')">
+                            <div class="offer-title">WYMAŻ BAZĘ DANYCH</div>
+                            <div class="offer-price danger">-30 PLN</div>
+                            <div class="offer-desc">całkowite czyszczenie</div>
+                        </div>
+                        <div class="offer-card" onclick="buyOffer('ip_order')">
+                            <div class="offer-title">CUSTOM IP ORDER</div>
+                            <div class="offer-price">10/20 PLN</div>
+                            <div class="offer-desc">indywidualne zamówienie</div>
+                        </div>
+                    </div>
+                    <div class="offer-note">
+                        💰 Po kliknięciu skontaktuj się: <a href="#" onclick="showContact()">@admin</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel admina -->
+        <div id="adminPanel" class="panel">
+            <div id="adminLoginPanel">
+                <div class="login-header">
+                    <h2>Panel Administratora</h2>
+                    <p>Wprowadź hasło aby zarządzać bazą</p>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">
+                        <span>🔒 HASŁO ADMINA</span>
+                        <i>WYMAGANE</i>
+                    </div>
+                    <div class="key-input-wrapper">
+                        <span class="key-prefix">#</span>
+                        <input type="password" id="adminPassInput" placeholder="••••••••" autocomplete="off">
+                    </div>
+                </div>
+
+                <button class="login-btn" onclick="adminLogin()">ZALOGUJ JAKO ADMIN</button>
+            </div>
+
+            <div id="adminPanelContent" style="display: none;">
+                <div class="admin-header">
+                    <div>
+                        <h3 style="color:#fff; margin-bottom:5px;">Witaj Administratorze</h3>
+                        <div class="admin-stats">
+                            <span>📊 Rekordy: <span id="statsCount">0</span></span>
+                            <span>🔑 Klucze: 8</span>
+                        </div>
+                    </div>
+                    <div class="logout-btn" onclick="adminLogout()">WYLOGUJ</div>
+                </div>
+
+                <div class="admin-section">
+                    <div class="form-group">
+                        <label>👤 NICK GRACZA</label>
+                        <input type="text" id="adminNick" class="admin-input" placeholder="np. Gracz1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📍 ADRES IP</label>
+                        <input type="text" id="adminIP" class="admin-input" placeholder="np. 192.168.1.100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📅 DATA (opcjonalnie)</label>
+                        <input type="text" id="adminDate" class="admin-input" placeholder="np. 2024-01-15">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📌 ŹRÓDŁO (opcjonalnie)</label>
+                        <input type="text" id="adminSource" class="admin-input" placeholder="np. Serwer S1">
+                    </div>
+                    
+                    <button class="admin-btn" onclick="addRecord()">➕ DODAJ DO BAZY</button>
+                    
+                    <div id="adminMessage" class="success-message" style="text-align:center; margin-top:10px;"></div>
+
+                    <div class="records-list" id="recordsList">
+                        <!-- Tutaj będą pojawiać się rekordy -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DANE ====================
+        const VALID_KEYS = [
+            'ADM-IN9', 'XX2-45J-6H3', 'AB1-23C-4DE', 
+            'TEST-123-KEY', 'ADMIN-999', 'VIP-2024-LTC',
+            'PRO-43F-H2O', 'X9K-2M4-N7Q'
+        ];
+
+        const ADMIN_PASSWORD = 'ltcadmin2024'; // ZMIEŃ TO HASŁO!
+
+        // Baza danych w localStorage
+        let database = [];
+
+        // Stan zalogowania
+        let currentKey = null;
+        let isAdminLogged = false;
+
+        // ==================== INICJALIZACJA ====================
+        function initDatabase() {
+            const saved = localStorage.getItem('ltc_database');
+            if (saved) {
+                database = JSON.parse(saved);
+            } else {
+                // Przykładowe dane
+                database = [
+                    { nick: 'Gracz1', ip: '192.168.1.100', date: '2024-01-15', source: 'Serwer S1' },
+                    { nick: 'Gracz1', ip: '10.0.0.50', date: '2024-01-16', source: 'Forum' },
+                    { nick: 'Gracz2', ip: '172.16.0.25', date: '2024-01-16', source: 'Discord' },
+                    { nick: 'Gracz3', ip: '8.8.8.8', date: '2024-01-17', source: 'Publiczny' },
+                    { nick: 'Admin', ip: '192.168.1.1', date: '2024-01-18', source: 'Panel' }
+                ];
+                saveDatabase();
+            }
+            updateStats();
+        }
+
+        function saveDatabase() {
+            localStorage.setItem('ltc_database', JSON.stringify(database));
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('statsCount').textContent = database.length;
+            if (isAdminLogged) {
+                displayRecords();
+            }
+        }
+
+        // ==================== PRZEŁĄCZANIE ZAKŁADEK ====================
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            
+            if (tab === 'user') {
+                document.querySelector('.nav-tab').classList.add('active');
+                document.getElementById('userPanel').classList.add('active');
+                document.getElementById('mainBadge').textContent = 'PANEL UŻYTKOWNIKA';
+            } else {
+                document.querySelectorAll('.nav-tab')[1].classList.add('active');
+                document.getElementById('adminPanel').classList.add('active');
+                document.getElementById('mainBadge').textContent = 'PANEL ADMINA';
+            }
+        }
+
+        // ==================== PANEL UŻYTKOWNIKA ====================
+        function login() {
+            const keyInput = document.getElementById('keyInput');
+            const key = keyInput.value.trim().toUpperCase();
+            
+            if (!key) {
+                alert('✗ Wprowadź klucz dostępu');
+                return;
+            }
+
+            if (!VALID_KEYS.includes(key)) {
+                alert('✗ Nieprawidłowy klucz licencji');
+                keyInput.value = '';
+                return;
+            }
+
+            currentKey = key;
+            
+            document.getElementById('loginPanel').style.display = 'none';
+            document.getElementById('searchPanel').style.display = 'block';
+            
+            document.getElementById('displayKey').textContent = '•'.repeat(key.length);
+            keyInput.value = '';
+        }
+
+        function logout() {
+            if (confirm('Czy na pewno chcesz się wylogować?')) {
+                currentKey = null;
+                document.getElementById('loginPanel').style.display = 'block';
+                document.getElementById('searchPanel').style.display = 'none';
+                document.getElementById('result').innerHTML = '⚡ Wprowadź nick gracza aby rozpocząć wyszukiwanie';
+                document.getElementById('result').className = 'result-section';
+            }
+        }
+
+        function searchIP() {
+            if (!currentKey) return;
+
+            const nick = document.getElementById('nickInput').value.trim();
+            if (!nick) {
+                showResult('✗ Wpisz nick gracza', 'error');
+                return;
+            }
+
+            showResult('🔍 Przeszukiwanie bazy danych...', 'info');
+
+            setTimeout(() => {
+                const results = database.filter(item => 
+                    item.nick.toLowerCase() === nick.toLowerCase()
+                );
+                
+                if (results.length > 0) {
+                    let resultText = `✅ ZNALEZIONO ${results.length} REKORDÓW\n\n`;
+                    results.forEach((item, index) => {
+                        resultText += `👤 ${item.nick}\n`;
+                        resultText += `   📍 IP: ${item.ip}\n`;
+                        resultText += `   📅 Data: ${item.date}\n`;
+                        resultText += `   📌 Źródło: ${item.source}\n`;
+                        if (index < results.length - 1) resultText += `   ${'─'.repeat(28)}\n`;
+                    });
+                    showResult(resultText, 'success');
+                } else {
+                    showResult('❌ Nie znaleziono IP dla podanego nicku', 'error');
+                }
+            }, 600);
+        }
+
+        function showResult(message, type) {
+            const resultEl = document.getElementById('result');
+            resultEl.innerHTML = message.replace(/\n/g, '<br>');
+            resultEl.className = 'result-section';
+            resultEl.classList.add(type + '-message');
+        }
+
+        // ==================== PANEL ADMINA ====================
+        function adminLogin() {
+            const pass = document.getElementById('adminPassInput').value;
+            
+            if (pass === ADMIN_PASSWORD) {
+                isAdminLogged = true;
+                document.getElementById('adminLoginPanel').style.display = 'none';
+                document.getElementById('adminPanelContent').style.display = 'block';
+                displayRecords();
+                updateStats();
+                document.getElementById('adminPassInput').value = '';
+            } else {
+                alert('❌ Złe hasło!');
+            }
+        }
+
+        function adminLogout() {
+            isAdminLogged = false;
+            document.getElementById('adminLoginPanel').style.display = 'block';
+            document.getElementById('adminPanelContent').style.display = 'none';
+        }
+
+        function addRecord() {
+            const nick = document.getElementById('adminNick').value.trim();
+            const ip = document.getElementById('adminIP').value.trim();
+            
+            if (!nick || !ip) {
+                document.getElementById('adminMessage').textContent = '❌ Nick i IP są wymagane!';
+                return;
+            }
+
+            const date = document.getElementById('adminDate').value.trim() || new Date().toISOString().split('T')[0];
+            const source = document.getElementById('adminSource').value.trim() || 'brak';
+
+            const record = { nick, ip, date, source };
+            
+            database.unshift(record);
+            saveDatabase();
+            
+            // Wyczyść formularz
+            document.getElementById('adminNick').value = '';
+            document.getElementById('adminIP').value = '';
+            document.getElementById('adminDate').value = '';
+            document.getElementById('adminSource').value = '';
+            
+            document.getElementById('adminMessage').textContent = '✅ Rekord dodany pomyślnie!';
+            displayRecords();
+            
+            setTimeout(() => {
+                document.getElementById('adminMessage').textContent = '';
+            }, 3000);
+        }
+
+        function displayRecords() {
+            const list = document.getElementById('recordsList');
+            if (database.length === 0) {
+                list.innerHTML = '<p style="color:#888; text-align:center; padding:20px">Brak rekordów w bazie</p>';
+                return;
+            }
+
+            let html = '';
+            database.slice(0, 10).forEach(rec => {
+                html += `
+                    <div class="record-item">
+                        <strong>${rec.nick}</strong> <span style="color:#4ade80">${rec.ip}</span><br>
+                        <span style="color:#888; font-size:0.85em">📅 ${rec.date} | 📍 ${rec.source}</span>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        // ==================== OFERTY ====================
+        function showBuyInfo() {
+            alert('Aby kupić licencję skontaktuj się:\n📱 Telegram: @ltc_admin\n💬 Discord: ltc.support');
+        }
+
+        function buyOffer(offer) {
+            if (!currentKey) {
+                alert('❌ Najpierw musisz się zalogować!');
+                return;
+            }
+
+            if (offer === 'database') {
+                if (confirm('⚠️ Czy na pewno chcesz WYMAZAĆ BAZĘ DANYCH za -30 PLN?\n\nTej operacji nie można cofnąć!')) {
+                    showResult('🗑️ PRZETWARZANIE PŁATNOŚCI...', 'warning');
+                    setTimeout(() => {
+                        showResult('✅ BAZA DANYCH ZOSTAŁA WYMAZANA!\n\nUsunięto: 30 rekordów\nKwota: -30 PLN\nTransakcja: LTC-2024-001', 'success');
+                    }, 2000);
+                }
+            } else if (offer === 'ip_order') {
+                const price = prompt('Wybierz opcję:\n1. Pojedyncze IP - 10 PLN\n2. Pakiet 3 IP - 20 PLN\n\nWpisz 1 lub 2:');
+                if (price === '1') {
+                    showResult('📦 Zamówienie: Pojedyncze IP (10 PLN)\n\nSkontaktuj się z adminem aby podać dane.', 'info');
+                } else if (price === '2') {
+                    showResult('📦 Zamówienie: Pakiet 3 IP (20 PLN)\n\nSkontaktuj się z adminem aby podać dane.', 'info');
+                }
+            }
+        }
+
+        function showContact() {
+            alert('📱 KONTAKT:\n\nTelegram: @ltc_admin\nDiscord: ltc.support\nEmail: support@ltcleaks.pl');
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initDatabase();
+
+            // Login
+            document.getElementById('loginBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                login();
+            });
+            
+            document.getElementById('keyInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    login();
+                }
+            });
+            
+            document.getElementById('nickInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchIP();
+                }
+            });
+
+            // Admin login
+            document.getElementById('adminPassInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    adminLogin();
+                }
+            });
+        });
+    </script>
+</body>
+              </html>
